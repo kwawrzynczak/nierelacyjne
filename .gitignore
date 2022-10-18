@@ -1,1 +1,4 @@
 Opiekunka/
+run_postgres_db.sh
+close_postgres_db.sh
+
