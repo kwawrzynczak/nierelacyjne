@@ -1,6 +1,7 @@
 from DatabaseSession import DatabaseSession
 
-from sqlalchemy import MetaData, Table, Column, Integer, Float, Boolean, String, ForeignKey, false, true
+from sqlalchemy import MetaData, Table, Column, Integer, Float, Boolean, String, ForeignKey, false, true, Date
+from sqlalchemy.sql import func
 
 ds = DatabaseSession()
 db = ds.create_new_session()
@@ -42,8 +43,18 @@ academic_sitters = Table(
     'academic_sitters', meta,
     Column('id', Integer, autoincrement=True, primary_key=True),
     Column('sitter_id', ForeignKey('sitters.id')),
-    Column('bonus', Float),
     Column('max_age', Integer)
+)
+
+reservations = Table(
+    'reservations', meta,
+    Column('id', Integer, autoincrement=True, primary_key=True),
+    Column('date', Date, server_default=func.now()),
+    Column('start_hour', Integer),
+    Column('end_hour', Integer),
+    Column('sitter_id', ForeignKey('sitters.id'), nullable=False),
+    Column('parent_id', ForeignKey('parents.id'), nullable=False),
+    Column('can_teach', Boolean, default=false)
 )
 
 meta.create_all(ds.engine)
