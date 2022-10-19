@@ -2,11 +2,11 @@ from DatabaseSession import DatabaseSession
 from Base import Base
 
 class Repository():
+    """klasa zajmujaca sie obsluga danych z bazy danych"""
 
     def __init__(self):
         self.ds = DatabaseSession()
         
-
     def add(self, obj: Base):
         db = self.ds.create_new_session()
         db.add(obj)
@@ -33,6 +33,9 @@ class Repository():
 
         return result
 
-    def find_by(self, class_type: type, predicate) -> list[Base]:
-        pass
+    def find_by(self, class_type: type, predicate: Any) -> list[Base]:
+        db = self.ds.create_new_session()
+        result = db.query(class_type).where(predicate)
+        db.close()
 
+        return result
