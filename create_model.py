@@ -20,7 +20,7 @@ parents = Table(
     Column('parent_name', String(50), nullable=False),
     Column('address', String(255)),
     Column('phone_number', String(12), nullable=False),
-    Column('is_teaching_required', Boolean, default=false),
+    Column('is_teaching_required', Boolean, default=False),
     Column('child_id', ForeignKey('children.id'))
 )
 
@@ -30,7 +30,7 @@ sitters = Table(
     Column('first_name', String(50)),
     Column('last_name', String(50), nullable=False),
     Column('base_price', Float, nullable=False),
-    Column('is_available', Boolean, default=true)
+    Column('is_available', Boolean, default=True)
 )
 
 housekeepers = Table(
@@ -54,7 +54,7 @@ reservations = Table(
     Column('end_hour', Integer),
     Column('sitter_id', ForeignKey('sitters.id'), nullable=False),
     Column('parent_id', ForeignKey('parents.id'), nullable=False),
-    Column('can_teach', Boolean, default=false)
+    Column('can_teach', Boolean, default=False)
 )
 
 meta.create_all(ds.engine)

@@ -11,7 +11,7 @@ class Parent(Base):
     parent_name = Column(String(50), nullable=False)
     address = Column(String(255), nullable=False)
     phone_number = Column(String(12), nullable=False)
-    is_teaching_required = Column(Boolean, default=false)
+    is_teaching_required = Column(Boolean, default=False)
 
     child_id = Column(Integer, ForeignKey(Child.id))
     child = relationship(Child)

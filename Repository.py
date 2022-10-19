@@ -33,7 +33,7 @@ class Repository():
 
         return result
 
-    def find_by(self, class_type: type, predicate: Any) -> list[Base]:
+    def find_by(self, class_type: type, predicate) -> list[Base]:
         db = self.ds.create_new_session()
         result = db.query(class_type).where(predicate)
         db.close()

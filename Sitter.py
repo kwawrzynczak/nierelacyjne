@@ -11,7 +11,7 @@ class Sitter(Base):
     first_name = Column(String(50))
     last_name = Column(String(50))
     base_price = Column(Float, nullable=False)
-    is_available = Column(Boolean, default=true)
+    is_available = Column(Boolean, default=True)
 
     def __init__(
         self, 

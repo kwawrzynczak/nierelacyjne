@@ -24,7 +24,7 @@ class ReservationManager():
         self.repo.add(reservation)
         return True
 
-    def get_reservation(self, predicate: Any) -> Reservation:
+    def get_reservation(self, predicate) -> Reservation:
         return self.repo.find_by(Reservation, predicate)
 
     def get_all_reservations(self) -> list[Reservation]:

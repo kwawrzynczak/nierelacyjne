@@ -21,7 +21,7 @@ class Reservation(Base):
     end_hour = Column(Integer)
     sitter_id = Column(ForeignKey(Sitter.id), nullable=False)
     parent_id = Column(ForeignKey(Parent.id), nullable=False)
-    can_teach = Column(Boolean, default=false)
+    can_teach = Column(Boolean, default=False)
 
     sitter = relationship(Sitter)
     parent = relationship(Parent)

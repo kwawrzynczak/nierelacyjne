@@ -34,7 +34,7 @@ class SitterManager():
     def get_sitter(self, sitter_id: int) -> Sitter: 
         return self.repo.get(Sitter, sitter_id)
 
-    def find_sitters(self, predicate: Any) -> list[Sitter]:
+    def find_sitters(self, predicate) -> list[Sitter]:
         return self.repo.find_by(Sitter, predicate)
 
     def find_all_sitters(self) -> list[Sitter]:
