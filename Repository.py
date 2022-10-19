@@ -20,11 +20,19 @@ class Repository():
         db.close()
 
     def get(self, class_type: type, id: int) -> Base:
-        pass
+        db = self.ds.create_new_session()
+        result = db.query(class_type).where(class_type.id == id)
+        db.close()
+        
+        return result
 
     def find_all(self, class_type: type) -> list[Base]:
-        pass
+        db = self.ds.create_new_session()
+        result = db.query(class_type).all()
+        db.close()
+
+        return result
 
     def find_by(self, class_type: type, predicate) -> list[Base]:
         pass
-    
+

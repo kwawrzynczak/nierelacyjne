@@ -7,13 +7,13 @@ class Parent(Base):
     """Klasa rodzica odpowiedzialna za wynajmowanie opiekunki dla dziecka"""
 
     __tablename__ = 'parents'
-    parent_id = Column(Integer, autoincrement=True, primary_key=True) 
+    id = Column(Integer, autoincrement=True, primary_key=True) 
     parent_name = Column(String(50), nullable=False)
     address = Column(String(255), nullable=False)
     phone_number = Column(String(12), nullable=False)
     is_teaching_required = Column(Boolean, default=false)
 
-    child_id = Column(Integer, ForeignKey(Child.child_id))
+    child_id = Column(Integer, ForeignKey(Child.id))
     child = relationship(Child)
 
     def __init__(

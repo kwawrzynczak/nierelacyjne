@@ -15,12 +15,12 @@ class Reservation(Base):
         CheckConstraint('end_hour> 0 AND end_hour <= 24')
     )
 
-    reservation_id = Column(Integer, autoincrement=True, primary_key=True) 
+    id = Column(Integer, autoincrement=True, primary_key=True) 
     date = Column(Date, server_default=func.now())
     start_hour = Column(Integer)
     end_hour = Column(Integer)
-    sitter_id = Column(ForeignKey(Sitter.sitter_id), nullable=False)
-    parent_id = Column(ForeignKey(Parent.parent_id), nullable=False)
+    sitter_id = Column(ForeignKey(Sitter.id), nullable=False)
+    parent_id = Column(ForeignKey(Parent.id), nullable=False)
     can_teach = Column(Boolean, default=false)
 
     sitter = relationship(Sitter)
@@ -59,9 +59,9 @@ class Reservation(Base):
         return self.end_hour - self.start_hour
 
     def get_reservation_info(self) -> str:
-        out = f'ID rezerwacji: {self.reservation_id}\n'
-        out += f'ID rodzica: {self.parent.parent_id}\n'
-        out += f'ID opiekunki: {self.sitter.sitter_id}\n'
+        out = f'ID rezerwacji: {self.id}\n'
+        out += f'ID rodzica: {self.parent_id}\n'
+        out += f'ID opiekunki: {self.sitter_id}\n'
         out += f'Data rezerwacji: {self.date}\n'
         out += f'Rezerwacja od {self.start_hour} do {self.end_hour}\n'
         out += f'Koszt rezerwacji: {self.get_reservation_cost()}\n'

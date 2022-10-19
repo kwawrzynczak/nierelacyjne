@@ -7,7 +7,7 @@ class Sitter(Base):
 
     __tablename__ = 'sitters'
 
-    sitter_id = Column(Integer, autoincrement=True, primary_key=True) 
+    id = Column(Integer, autoincrement=True, primary_key=True) 
     first_name = Column(String(50))
     last_name = Column(String(50))
     base_price = Column(Float, nullable=False)
