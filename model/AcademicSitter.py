@@ -2,6 +2,7 @@ from Sitter import Sitter
 from Base import Base
 
 from sqlalchemy import Column, Float, Integer, ForeignKey, CheckConstraint
+
 class AcademicSitter(Sitter, Base):
     """Opiekunka akademicka posiada zdolnosc do nauczania dziecka"""
 
