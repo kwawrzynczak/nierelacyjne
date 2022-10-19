@@ -1,18 +1,23 @@
 from Child import Child
+from Base import Base
+from sqlalchemy import Column, Integer, String, Boolean, false, ForeignKey
+from sqlalchemy.orm import relationship
 
 class Parent():
     """Klasa rodzica odpowiedzialna za wynajmowanie opiekunki dla dziecka"""
 
-    parent_id: int 
-    parent_name: str 
-    address: str 
-    phone_number: str 
-    is_teaching_required: bool 
-    child: Child 
+    __tablename__ = 'parents'
+    parent_id = Column(Integer, autoincrement=True, primary_key=True) 
+    parent_name = Column(String(50), nullable=False)
+    address = Column(String(255), nullable=False)
+    phone_number = Column(String(12), nullable=False)
+    is_teaching_required = Column(Boolean, default=false)
+
+    child_id = Column(Integer, ForeignKey(Child.child_id))
+    child = relationship()
 
     def __init__(
         self, 
-        parent_id: int,
         parent_name: str, 
         address: str, 
         phone_number: str, 
@@ -31,7 +36,6 @@ class Parent():
         if child is None:
             raise ValueError("Obiekt dziecka nie istnieje!")
 
-        self.parent_id = parent_id
         self.parent_name = parent_name
         self.address = address
         self.phone_number = phone_number
@@ -39,9 +43,7 @@ class Parent():
         self.child = child
 
     def get_parent_info(self) -> str:
-        out = ''
-        out += f'ID rodzica: {self.parent_id}\n'
-        out += f'Imie: {self.parent_name}\n'
+        out = f'Imie: {self.parent_name}\n'
         out += f'Imie dziecka: {self.child.child_name}\n'
         out += f'Adres zamieszkania: {self.address}\n'
         out += f'Numer telefonu: {self.phone_number}\n'
@@ -50,7 +52,7 @@ class Parent():
         return out
 
     def get_child_info(self) -> str:
-        out = f'ID rodzica: {self.parent_id}\n'
+        out = f'Imie rodzica: {self.parent_name}\n'
         out += self.child.get_child_info()
 
         return out
