@@ -27,7 +27,7 @@ class Parent(Base):
         if not parent_name or not parent_name.split():
             raise ValueError("Wprowadz poprawne imie rodzica!")
 
-        if len(phone_number) != 9:
+        if len(phone_number) < 9:
             raise ValueError("Wprowadz poprawny numer telefonu!")
 
         if not address or not address.split():

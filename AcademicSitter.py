@@ -12,6 +12,7 @@ class AcademicSitter(Sitter, Base):
         CheckConstraint('max_age > 0')
     )
 
+    academic_sitter_id = Column(Integer, autoincrement=True, primary_key=True)
     sitter_id = Column(ForeignKey(Sitter.sitter_id))
     bonus = Column(Float)
     max_age = Column(Integer)
