@@ -1,20 +1,33 @@
 from Sitter import Sitter
 from Parent import Parent
+from Base import Base
 
-class Reservation():
+from sqlalchemy import Column, Integer, String, Date, ForeignKey, CheckConstraint, Boolean, false
+from sqlalchemy.sql import func
+from sqlalchemy.orm import relationship
+
+class Reservation(Base):
     """Kumuluje wszystkie dane potrzebne do utworzenia rezerwacji"""
 
-    reservation_id: int 
-    date: str
-    start_hour: int 
-    end_hour: int 
-    sitter: Sitter
-    parent: Parent 
-    can_teach: bool 
+    __tablename__ = 'reservations'
+    __table_args__ = (
+        CheckConstraint('start_hour > 0 AND start_hour <= 24'),
+        CheckConstraint('end_hour> 0 AND end_hour <= 24')
+    )
+
+    reservation_id = Column(Integer, autoincrement=True, primary_key=True) 
+    date = Column(Date, server_default=func.now())
+    start_hour = Column(Integer)
+    end_hour = Column(Integer)
+    sitter_id = Column(ForeignKey(Sitter.sitter_id), nullable=False)
+    parent_id = Column(ForeignKey(Parent.parent_id), nullable=False)
+    can_teach = Column(Boolean, default=false)
+
+    sitter = relationship(Sitter)
+    parent = relationship(Parent)
 
     def __init__(
         self, 
-        reservation_id: int, 
         date: str, 
         start_hour: int, 
         end_hour: int,
@@ -35,7 +48,6 @@ class Reservation():
         if parent is None:
             raise ValueError("Obiekt rodzica jest nieprawidlowy!")
 
-        self.reservation_id = reservation_id
         self.date = date
         self.start_hour = start_hour
         self.end_hour = end_hour
