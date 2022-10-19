@@ -1,16 +1,20 @@
+from Base import Base
 
-class Sitter():
+from sqlalchemy import Column, Integer, String, Float, Boolean, true
+
+class Sitter(Base):
     """Bazowa klasa opiekunki dla dzieci"""
 
-    sitter_id: int
-    first_name: str
-    last_name: str 
-    base_price: float 
-    is_available: bool 
+    __tablename__ = 'sitters'
+
+    sitter_id = Column(Integer, autoincrement=True, primary_key=True) 
+    first_name = Column(String(50))
+    last_name = Column(String(50))
+    base_price = Column(Float, nullable=False)
+    is_available = Column(Boolean, default=true)
 
     def __init__(
         self, 
-        sitter_id: int, 
         first_name: str, 
         last_name: str,
         base_price: float
@@ -24,7 +28,6 @@ class Sitter():
         if base_price <= 0:
             raise ValueError("Cena podstawowa powinna byc wieksza od zera.")
 
-        self.sitter_id = sitter_id
         self.first_name = first_name
         self.last_name = last_name
         self.base_price = base_price

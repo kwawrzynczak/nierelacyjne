@@ -1,10 +1,22 @@
 from Sitter import Sitter
+from Base import Base
 
-class Housekeeper(Sitter):
+from sqlalchemy import Column, ForeignKey, Integer, CheckConstraint
+
+class Housekeeper(Sitter, Base):
     """Klasa pomocy domowej"""
+
+    __tablename__ = 'housekeepers'
+    __table_args__ = (
+        CheckConstraint('max_age >= 0')
+    )
+
+    sitter_id = Column(ForeignKey(Sitter.sitter_id))
+    max_age = Column(Integer)
     
-    def __init__(self, sitter_id: int, first_name: str, last_name: str, base_price: float):
-        super().__init__(sitter_id, first_name, last_name, base_price)
+    def __init__(self, first_name: str, last_name: str, base_price: float):
+        super().__init__(first_name, last_name, base_price)
+        self.max_age = 0
 
     def get_actual_price(self) -> float: 
         return self.base_price
@@ -18,4 +30,4 @@ class Housekeeper(Sitter):
         return out
 
     def get_max_age(self) -> int:
-        return 0
+        return self.max_age
