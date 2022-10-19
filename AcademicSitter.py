@@ -1,7 +1,21 @@
 from Sitter import Sitter
+from Base import Base
 
-class AcademicSitter(Sitter):
+from sqlalchemy import Column, Float, Integer, ForeignKey, CheckConstraint
+
+class AcademicSitter(Sitter, Base):
     """Opiekunka akademicka posiada zdolnosc do nauczania dziecka"""
+
+    __tablename__ = 'academic_sitters'
+    __table_args__ = (
+        CheckConstraint('bonus >= 1'),
+        CheckConstraint('max_age > 0')
+    )
+
+    academic_sitter_id = Column(Integer, autoincrement=True, primary_key=True)
+    sitter_id = Column(ForeignKey(Sitter.sitter_id))
+    bonus = Column(Float)
+    max_age = Column(Integer)
 
     def __init__(
         self, 
@@ -25,7 +39,7 @@ class AcademicSitter(Sitter):
         self.base_price * self.bonus
 
     def get_sitter_info(self) -> str:
-        out = f'ID opiekunki: {self.id}\n'
+        out = f'ID opiekunki: {self.sitter_id}\n'
         out += f'Opiekunka {self.first_name} {self.last_name}\n'
         out += f'Typ opiekunki: Academic\n'
         out += f'Cena podstawowa: {self.base_price}\n'

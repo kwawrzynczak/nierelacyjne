@@ -1,6 +1,14 @@
+from Base import Base
 
-class Child():
+from sqlalchemy import Column, Integer, String
+
+class Child(Base):
     """Dziecko, dla którego będzie wynajmowana opiekunka"""
+
+    __tablename__ = 'children'
+    child_id = Column(Integer, autoincrement=True, primary_key=True)
+    child_name = Column(String(50), nullable=False)
+    child_age = Column(Integer, nullable=False)
 
     def __init__(self, name: str, age: int):
         if not name or not name.strip():
