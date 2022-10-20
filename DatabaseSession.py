@@ -14,8 +14,9 @@ class DatabaseSession():
         database = 'nbddb'
 
         self.engine = create_engine(
-            f'{dialect}+{driver}://{username}:{password}@{host}:{port}/{database}'
-            ,echo=True
+            f'{dialect}+{driver}://{username}:{password}@{host}:{port}/{database}',
+            isolation_level='SERIALIZABLE',
+            echo=False
         )
 
         self.factory = sessionmaker(bind=self.engine)
