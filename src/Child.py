@@ -1,14 +1,13 @@
-from Base import Base
+from dataclasses import dataclass, field
+from uuid import uuid4, UUID
 
-from sqlalchemy import Column, Integer, String
-
-class Child(Base):
+@dataclass
+class Child():
     """Dziecko, dla którego będzie wynajmowana opiekunka"""
 
-    __tablename__ = 'children'
-    id = Column(Integer, autoincrement=True, primary_key=True)
-    child_name = Column(String(50), nullable=False)
-    child_age = Column(Integer, nullable=False)
+    child_name: str
+    child_age: int
+    _id: UUID
 
     def __init__(self, name: str, age: int):
         if not name or not name.strip():
@@ -19,6 +18,7 @@ class Child(Base):
 
         self.child_age = age
         self.child_name = name
+        self._id = uuid4()
 
     def get_child_info(self) -> str:
         out = ''

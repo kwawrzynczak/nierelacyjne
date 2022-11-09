@@ -1,21 +1,16 @@
 from Sitter import Sitter
-from Base import Base
 
-from sqlalchemy import Column, Float, Integer, ForeignKey, CheckConstraint
+from dataclasses import dataclass, field
+from uuid import UUID, uuid4
 
-class AcademicSitter(Sitter, Base):
+@dataclass
+class AcademicSitter(Sitter):
     """Opiekunka akademicka posiada zdolnosc do nauczania dziecka"""
 
-    __tablename__ = 'academic_sitters'
-    __table_args__ = (
-        CheckConstraint('bonus >= 1'),
-        CheckConstraint('max_age > 0')
-    )
-
-    id = Column(Integer, autoincrement=True, primary_key=True)
-    sitter_id = Column(ForeignKey(Sitter.id))
-    bonus = Column(Float)
-    max_age = Column(Integer)
+    _id: UUID
+    bonus: float 
+    max_age: int 
+    sitter_id: UUID
 
     def __init__(
         self, 
@@ -31,9 +26,10 @@ class AcademicSitter(Sitter, Base):
         if max_age < 1:
             raise ValueError("Maksymalny wiek dziecka nieprawidlowy!")
         
-        super().__init__(first_name, last_name, base_price)
+        self.sitter_id = super().__init__(first_name, last_name, base_price)
         self.bonus = bonus
         self.max_age = max_age
+        self._id = uuid4()
 
     def get_actual_price(self) -> float:
         self.base_price * self.bonus

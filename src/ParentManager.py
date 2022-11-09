@@ -1,6 +1,6 @@
-from Child import Child
-from Parent import Parent
-from Repository import Repository
+# from Repository import Repository
+
+from src.model.Child import Child
 
 
 class ParentManager():

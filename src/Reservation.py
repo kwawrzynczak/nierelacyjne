@@ -1,30 +1,20 @@
 from Sitter import Sitter
 from Parent import Parent
-from Base import Base
 
-from sqlalchemy import Column, Integer, String, Date, ForeignKey, CheckConstraint, Boolean, false
-from sqlalchemy.sql import func
-from sqlalchemy.orm import relationship
+from dataclasses import dataclass
+from uuid import UUID, uuid4
 
+@dataclass
 class Reservation(Base):
     """Kumuluje wszystkie dane potrzebne do utworzenia rezerwacji"""
 
-    __tablename__ = 'reservations'
-    __table_args__ = (
-        CheckConstraint('start_hour > 0 AND start_hour <= 24'),
-        CheckConstraint('end_hour> 0 AND end_hour <= 24')
-    )
-
-    id = Column(Integer, autoincrement=True, primary_key=True) 
-    date = Column(Date, server_default=func.now())
-    start_hour = Column(Integer)
-    end_hour = Column(Integer)
-    sitter_id = Column(ForeignKey(Sitter.id), nullable=False)
-    parent_id = Column(ForeignKey(Parent.id), nullable=False)
-    can_teach = Column(Boolean, default=False)
-
-    sitter = relationship(Sitter)
-    parent = relationship(Parent)
+    _id: UUID
+    date: str 
+    start_hour: int 
+    end_hour: int 
+    sitter_id: UUID
+    parent_id: UUID 
+    can_teach: bool 
 
     def __init__(
         self, 
@@ -54,6 +44,10 @@ class Reservation(Base):
         self.sitter = sitter
         self.parent = parent
         self.can_teach = can_teach
+
+        self._id = uuid4()
+        self.parent = self.parent._id
+        self.sitter_id = self.sitter._id
 
     def get_reservation_time(self) -> int:
         return self.end_hour - self.start_hour

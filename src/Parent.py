@@ -1,20 +1,18 @@
 from Child import Child
-from Base import Base
-from sqlalchemy import Column, Integer, String, Boolean, false, ForeignKey
-from sqlalchemy.orm import relationship
 
-class Parent(Base):
+from uuid import uuid4, UUID
+from dataclasses import dataclass, field
+
+@dataclass
+class Parent():
     """Klasa rodzica odpowiedzialna za wynajmowanie opiekunki dla dziecka"""
 
-    __tablename__ = 'parents'
-    id = Column(Integer, autoincrement=True, primary_key=True) 
-    parent_name = Column(String(50), nullable=False)
-    address = Column(String(255), nullable=False)
-    phone_number = Column(String(12), nullable=False)
-    is_teaching_required = Column(Boolean, default=False)
-
-    child_id = Column(Integer, ForeignKey(Child.id))
-    child = relationship(Child)
+    _id: UUID
+    parent_name: str 
+    address: str
+    phone_number: str
+    is_teaching_required: bool 
+    child_id: UUID
 
     def __init__(
         self, 
@@ -41,6 +39,8 @@ class Parent(Base):
         self.phone_number = phone_number
         self.is_teaching_required = is_teaching_required
         self.child = child
+        self._id = uuid4()
+        self.child_id = self.child._id
 
     def get_parent_info(self) -> str:
         out = f'Imie: {self.parent_name}\n'
