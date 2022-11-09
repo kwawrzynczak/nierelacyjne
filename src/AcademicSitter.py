@@ -1,16 +1,14 @@
 from Sitter import Sitter
 
-from dataclasses import dataclass, field
 from uuid import UUID, uuid4
 
-@dataclass
 class AcademicSitter(Sitter):
     """Opiekunka akademicka posiada zdolnosc do nauczania dziecka"""
 
     _id: UUID
+    sitter_id: UUID
     bonus: float 
     max_age: int 
-    sitter_id: UUID
 
     def __init__(
         self, 
@@ -26,10 +24,11 @@ class AcademicSitter(Sitter):
         if max_age < 1:
             raise ValueError("Maksymalny wiek dziecka nieprawidlowy!")
         
-        self.sitter_id = super().__init__(first_name, last_name, base_price)
         self.bonus = bonus
         self.max_age = max_age
+        
         self._id = uuid4()
+        self.sitter_id = super().__init__(first_name, last_name, base_price)
 
     def get_actual_price(self) -> float:
         self.base_price * self.bonus
@@ -46,3 +45,13 @@ class AcademicSitter(Sitter):
 
     def get_max_age(self) -> int:
         return self.max_age
+
+    def as_dict(self) -> dict:
+        sitter = super().as_dict()
+
+        return {
+            '_id': self._id.__str__(),
+            'bonus': self.bonus,
+            'max_age': self.max_age,
+            'sitter': sitter
+        }

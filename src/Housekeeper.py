@@ -1,14 +1,12 @@
 from Sitter import Sitter
 
-from dataclasses import dataclass, field
 from uuid import UUID, uuid4
 
-@dataclass
 class Housekeeper(Sitter):
     """Klasa pomocy domowej"""
 
-    sitter_id: UUID
     _id: UUID
+    sitter_id: UUID
     
     def __init__(self, first_name: str, last_name: str, base_price: float):
         self.sitter_id = super().__init__(first_name, last_name, base_price)
@@ -26,4 +24,12 @@ class Housekeeper(Sitter):
         return out
 
     def get_max_age(self) -> int:
-        return self.max_age
+        return 0
+
+    def as_dict(self) -> dict:
+        sitter = super().as_dict()
+
+        return {
+            '_id': self._id.__str__(),
+            'sitter': sitter
+        }

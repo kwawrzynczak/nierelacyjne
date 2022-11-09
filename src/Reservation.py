@@ -1,19 +1,17 @@
 from Sitter import Sitter
 from Parent import Parent
 
-from dataclasses import dataclass
 from uuid import UUID, uuid4
 
-@dataclass
 class Reservation(Base):
     """Kumuluje wszystkie dane potrzebne do utworzenia rezerwacji"""
 
     _id: UUID
+    sitter_id: UUID
+    parent_id: UUID 
     date: str 
     start_hour: int 
     end_hour: int 
-    sitter_id: UUID
-    parent_id: UUID 
     can_teach: bool 
 
     def __init__(
@@ -70,3 +68,17 @@ class Reservation(Base):
             raise ValueError("Obiekt nowej opiekunki nie istnieje!")
 
         self.sitter = new_sitter
+
+    def as_dict(self) -> dict:
+        sitter = self.sitter.as_dict()
+        parent = self.parent.as_dict()
+
+        return {
+            '_id': self._id.__str__(),
+            'date': self.date,
+            'start_hour': self.start_hour,
+            'end_hour': self.end_hour,
+            'can_teach': self.can_teach,
+            'sitter': sitter,
+            'parent': parent
+        }

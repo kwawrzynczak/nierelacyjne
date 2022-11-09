@@ -1,7 +1,5 @@
-from dataclasses import dataclass, field
 from uuid import UUID, uuid4
 
-@dataclass
 class Sitter():
     """Bazowa klasa opiekunki dla dzieci"""
 
@@ -35,4 +33,13 @@ class Sitter():
 
     def set_available(self, is_available: bool):
         self.is_available = is_available
+
+    def as_dict(self) -> dict:
+        return {
+            '_id': self._id.__str__(),
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'base_price': self.base_price,
+            'is_available': self.is_available
+        }
         
