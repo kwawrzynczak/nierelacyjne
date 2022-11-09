@@ -53,5 +53,14 @@ class AcademicSitter(Sitter):
             '_id': self._id.__str__(),
             'bonus': self.bonus,
             'max_age': self.max_age,
-            'sitter': sitter
+            'sitter': sitter,
+            'type': 'academic'
         }
+
+    @staticmethod
+    def load_from_dict(academic: dict) -> object:
+        a = AcademicSitter(academic['first_name'], academic['last_name'], academic['base_price'], academic['bonus'], academic['max_age'])
+        a._id = academic['_id']
+        a.sitter_id = academic['sitter']['_id']
+
+        return a

@@ -39,4 +39,10 @@ class Child():
             'name': self.name,
             'age': self.age,
         }
-    
+
+    @staticmethod
+    def load_from_dict(child: dict) -> object:
+        c = Child(child['name'], child['age'])
+        c._id = child['_id']
+
+        return c

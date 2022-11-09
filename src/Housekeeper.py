@@ -31,5 +31,14 @@ class Housekeeper(Sitter):
 
         return {
             '_id': self._id.__str__(),
-            'sitter': sitter
+            'sitter': sitter,
+            'type': 'housekeeper',
         }
+
+    @staticmethod
+    def load_from_dict(housekeeper: dict) -> object:
+        h = Housekeeper(housekeeper['first_name'], housekeeper['last_name'], housekeeper['base_price'])
+        h._id = housekeeper['_id']
+        h.sitter_id = housekeeper['sitter']['_id']
+
+        return h

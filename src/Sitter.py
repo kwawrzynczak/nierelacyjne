@@ -40,6 +40,14 @@ class Sitter():
             'first_name': self.first_name,
             'last_name': self.last_name,
             'base_price': self.base_price,
-            'is_available': self.is_available
+            'is_available': self.is_available,
+            'type': 'sitter',
         }
+
+    @staticmethod
+    def load_from_dict(sitter: dict) -> object:
+        s = Sitter(sitter['first_name'], sitter['last_name'], sitter['base_price'])
+        s._id = sitter['_id']
+
+        return s
         

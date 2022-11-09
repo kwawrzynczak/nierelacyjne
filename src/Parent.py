@@ -67,3 +67,11 @@ class Parent():
             'is_teaching_required': self.is_teaching_required,
             'child': child,
         }
+
+    @staticmethod
+    def load_from_dict(parent: dict) -> object:
+        c = Child.load_from_dict(parent['child'])
+        p = Parent(parent['name'], parent['address'], parent['phone_number'], parent['is_teaching_required'], c)
+        p._id = parent['_id']
+
+        return p

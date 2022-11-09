@@ -1,4 +1,6 @@
 from Sitter import Sitter
+from Housekeeper import Housekeeper
+from AcademicSitter import AcademicSitter
 from Parent import Parent
 
 from uuid import UUID, uuid4
@@ -82,3 +84,18 @@ class Reservation(Base):
             'sitter': sitter,
             'parent': parent
         }
+
+    @staticmethod
+    def load_from_dict(reservation: dict) -> object:
+        sitter_type = reservation['sitter']['type']
+
+        if sitter_type == 'sitter': sitter = Sitter.load_from_dict(reservation['sitter'])
+        elif sitter_type == 'housekeeper': sitter = Housekeeper.load_from_dict(reservation['sitter'])
+        elif sitter_type == 'academic': sitter = AcademicSitter.load_from_dict(reservation['sitter'])
+        else: sitter = None
+
+        parent = Parent.load_from_dict(reservation['parent'])
+
+        r = Reservation(reservation['date'], reservation['start_hour'], reservation['end_hour'], sitter, parent, reservation['can_teach'])
+
+        return r
