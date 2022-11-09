@@ -1,19 +1,16 @@
 from Child import Child
-from Parent import Parent
-from Sitter import Sitter
-from Repository import Repository
-from Reservation import Reservation
+from ParentManager import ParentManager
+from ReservationManager import ReservationManager
+from SitterManager import SitterManager
 
-repo = Repository()
-child = Child('Franklin', 12)
-parent = Parent('ojciec', 'matko bosko 26 mieszkania 5', '+48111222333', True, child)
+pm = ParentManager()
+sm = SitterManager()
+rm = ReservationManager()
 
-repo.add(child)
-repo.add(parent)
+child = Child('Janusz', 49)
+parent = pm.create_parent('Brajan', 'Sulejowska', '123123123', True, child)
+sitter = sm.create_sitter('sitters', 'Nielubi', 'Dzieci', 420)
+reservation = rm.create_reservation('10/11/2022', 12, 14, sitter, parent, True)
 
-sitter = Sitter('aniela', 'rugosz', 16500)
-repo.add(sitter)
-
-reservation = Reservation('1 jan 1970', 16, 18, sitter, parent, False)
-
-repo.add(reservation)
+for r in rm.find_all_reservations():
+    print(r.get_reservation_info())
