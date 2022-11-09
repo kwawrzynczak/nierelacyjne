@@ -30,10 +30,10 @@ class Repository():
         collection = self.dc.db[collection_name]
         result = collection.find()
 
-        return result
+        return list(result)
 
     def find_by(self, collection_name: str, filter) -> list[dict]:
         collection = self.dc.db[collection_name]
         result = collection.find(filter)
 
-        return result
+        return list(result)
