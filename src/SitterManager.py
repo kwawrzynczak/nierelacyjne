@@ -32,6 +32,9 @@ class SitterManager():
         self.repo.add(collection_name, sitter.as_dict())
         return sitter
 
+    def remove_sitter(self, collection_name: str, sitter: Sitter) -> int:
+        self.repo.remove(collection_name, sitter.as_dict())
+
     def get_sitter(self, collection_name: str, sitter_id: str) -> Sitter:
         sitter_dict = self.repo.get(collection_name, sitter_id)
 

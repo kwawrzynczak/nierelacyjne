@@ -27,6 +27,9 @@ class ReservationManager():
         self.repo.add(self.collection_name, reservation.as_dict())
         return reservation
 
+    def remove_reservation(self, reservation: Reservation) -> int:
+        return self.repo.remove(self.collection_name, reservation.as_dict())
+
     def get_reservation(self, reservation_id: str) -> Reservation:
         reservation_dict = self.repo.get(self.collection_name, reservation_id)
         return Reservation.load_from_dict(reservation_dict)

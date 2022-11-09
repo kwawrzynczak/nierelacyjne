@@ -23,6 +23,10 @@ class ParentManager():
         self.repo.add(self.collection_name, parent.as_dict())
         return parent
 
+    def remove_parent(self, parent: Parent):
+        # returns number of deleted documents
+        return self.repo.remove(self.collection_name, parent.as_dict())
+
     def get_parent(self, parent_id: str) -> Parent:
         parent_dict = self.repo.get(self.collection_name, parent_id)
         return Parent.load_from_dict(parent_dict)
