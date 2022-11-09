@@ -9,7 +9,8 @@ class Housekeeper(Sitter):
     sitter_id: UUID
     
     def __init__(self, first_name: str, last_name: str, base_price: float):
-        self.sitter_id = super().__init__(first_name, last_name, base_price)
+        super().__init__(first_name, last_name, base_price)
+        self.sitter_id = super()._id
         self._id = uuid4()
 
     def get_actual_price(self) -> float: 

@@ -27,11 +27,12 @@ class AcademicSitter(Sitter):
         self.bonus = bonus
         self.max_age = max_age
         
+        super().__init__(first_name, last_name, base_price)
+        self.sitter_id = super()._id
         self._id = uuid4()
-        self.sitter_id = super().__init__(first_name, last_name, base_price)
 
     def get_actual_price(self) -> float:
-        self.base_price * self.bonus
+        return self.base_price * self.bonus
 
     def get_sitter_info(self) -> str:
         out = f'ID opiekunki: {self.id}\n'

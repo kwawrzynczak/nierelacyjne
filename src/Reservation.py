@@ -5,7 +5,7 @@ from Parent import Parent
 
 from uuid import UUID, uuid4
 
-class Reservation(Base):
+class Reservation():
     """Kumuluje wszystkie dane potrzebne do utworzenia rezerwacji"""
 
     _id: UUID
@@ -46,14 +46,14 @@ class Reservation(Base):
         self.can_teach = can_teach
 
         self._id = uuid4()
-        self.parent = self.parent._id
+        self.parent_id = self.parent._id
         self.sitter_id = self.sitter._id
 
     def get_reservation_time(self) -> int:
         return self.end_hour - self.start_hour
 
     def get_reservation_info(self) -> str:
-        out = f'ID rezerwacji: {self.id}\n'
+        out = f'ID rezerwacji: {self._id}\n'
         out += f'ID rodzica: {self.parent_id}\n'
         out += f'ID opiekunki: {self.sitter_id}\n'
         out += f'Data rezerwacji: {self.date}\n'

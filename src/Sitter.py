@@ -14,7 +14,7 @@ class Sitter():
         first_name: str, 
         last_name: str,
         base_price: float
-    ) -> UUID:
+    ):
         if not first_name or not first_name.split():
             raise ValueError("Wprowadz poprawne imie opiekunki!")
 
@@ -27,9 +27,11 @@ class Sitter():
         self.first_name = first_name
         self.last_name = last_name
         self.base_price = base_price
+        self.is_available = True
         self._id = uuid4()
 
-        return self._id
+    def get_actual_price(self) -> float:
+        return self.base_price
 
     def set_available(self, is_available: bool):
         self.is_available = is_available

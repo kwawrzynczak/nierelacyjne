@@ -43,7 +43,7 @@ class Parent():
 
     def get_parent_info(self) -> str:
         out = f'Imie: {self.name}\n'
-        out += f'Imie dziecka: {self.child.child_name}\n'
+        out += f'Imie dziecka: {self.child.name}\n'
         out += f'Adres zamieszkania: {self.address}\n'
         out += f'Numer telefonu: {self.phone_number}\n'
         out += f'UWAGI: Wymagana pomoc w nauce\n' if self.is_teaching_required else ''
