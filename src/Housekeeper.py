@@ -30,7 +30,7 @@ class Housekeeper(Sitter):
 
         return {
             '_id': self._id,
-            'sitter': sitter,
+            'sitter_id': self.sitter_id,
             'type': 'housekeeper',
         }
 
