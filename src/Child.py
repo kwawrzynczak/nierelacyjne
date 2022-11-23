@@ -1,23 +1,21 @@
-from uuid import uuid4, UUID
 
 class Child():
     """Dziecko, dla którego będzie wynajmowana opiekunka"""
 
-    _id: UUID
+    _id: int
     name: str
     age: int
 
-    def __init__(self, name: str, age: int):
+    def __init__(self, _id: int, name: str, age: int):
         if not name or not name.strip():
             raise ValueError("Wprowadz poprawne imie dziecka!")
 
         if age < 0:
             raise ValueError("Wprowadz poprawny wiek dziecka!")
 
+        self._id = _id
         self.age = age
         self.name = name
-
-        self._id = uuid4()
 
     def get_child_info(self) -> str:
         out = ''
@@ -35,7 +33,7 @@ class Child():
 
     def as_dict(self) -> dict:
         return {
-            '_id': self._id.__str__(),
+            '_id': self._id,
             'name': self.name,
             'age': self.age,
         }

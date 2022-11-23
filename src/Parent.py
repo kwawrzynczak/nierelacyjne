@@ -1,12 +1,11 @@
 from Child import Child
-
-from uuid import uuid4, UUID
+from Repository import Repository
 
 class Parent():
     """Klasa rodzica odpowiedzialna za wynajmowanie opiekunki dla dziecka"""
 
-    _id: UUID
-    child_id: UUID
+    _id: int 
+    child_id: int 
     name: str 
     address: str
     phone_number: str
@@ -14,6 +13,7 @@ class Parent():
 
     def __init__(
         self, 
+        _id: int,
         name: str, 
         address: str, 
         phone_number: str, 
@@ -30,16 +30,15 @@ class Parent():
             raise ValueError("Wprowadz poprawny adres!")
 
         if child is None:
-            raise ValueError("Obiekt dziecka nie istnieje!")
+            raise ValueError("Podane dziecko nie istnieje!")
 
+        self._id = _id
+        self.child_id = child._id
         self.name = name 
         self.address = address
         self.phone_number = phone_number
         self.is_teaching_required = is_teaching_required
         self.child = child
-
-        self._id = uuid4()
-        self.child_id = self.child._id
 
     def get_parent_info(self) -> str:
         out = f'Imie: {self.name}\n'
@@ -57,21 +56,18 @@ class Parent():
         return out
 
     def as_dict(self) -> dict:
-        child = self.child.as_dict()
-
         return {
-            '_id': self._id.__str__(),
+            '_id': self._id,
+            'child_id': self.child._id,
             'name': self.name,
             'address': self.address,
             'phone_number': self.phone_number,
             'is_teaching_required': self.is_teaching_required,
-            'child': child,
         }
 
     @staticmethod
     def load_from_dict(parent: dict) -> object:
-        c = Child.load_from_dict(parent['child'])
-        p = Parent(parent['name'], parent['address'], parent['phone_number'], parent['is_teaching_required'], c)
-        p._id = parent['_id']
+        repo = Repository()
+        c = Child.load_from_dict(repo.get(f'child:{parent["child_id"]}'))
 
-        return p
+        return Parent(parent['_id'], parent['name'], parent['address'], parent['phone_number'], parent['is_teaching_required'], c)
