@@ -16,7 +16,8 @@ class ParentManager():
     ) -> Parent:
 
         # obecnie najwieksze uzywane id rodzica
-        new_parent_id = self.repo.get('parent_id') + 1
+        pid = self.repo.get('parent_id')
+        new_parent_id = pid + 1 if pid != None else 1
         parent = Parent(new_parent_id, parent_name, address, phone_number, is_teaching_required, child)
 
         # dodanie do bazy danych
