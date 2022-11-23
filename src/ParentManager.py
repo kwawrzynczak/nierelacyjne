@@ -13,12 +13,24 @@ class ParentManager():
             address: str,
             phone_number: str,
             is_teaching_required: bool,
-            child: Child
+            child_name: str,
+            child_age: int,
     ) -> Parent:
+
+        # dodaj dziecko
+        try:
+            cid = int(self.repo.get('child_id'))
+            new_child_id = cid + 1
+        except DatabaseError:
+            new_child_id = 1
+
+        child = Child(new_child_id, child_name, child_age)
+        self.repo.add(f'child:{new_child_id}', child.as_dict())
+        self.repo.add('child_id', new_child_id)
 
         # obecnie najwieksze uzywane id rodzica
         try:
-            pid = self.repo.get('parent_id')
+            pid = int(self.repo.get('parent_id'))
             new_parent_id = pid + 1
         except DatabaseError: # parent_id doesnt exist yet
             new_parent_id = 1
@@ -46,7 +58,7 @@ class ParentManager():
     def find_parents(self, predicate: dict) -> list[Parent]:
         out = []
 
-        for parent_dict in self.repo.find_by('parent', predicate):
+        for parent_dict in self.repo.find_by('parent:*', predicate):
             child_dict = self.repo.get(f'child:{parent_dict["child_id"]}')
             out.append(Parent.load_from_dict(parent_dict, child_dict))
 
@@ -55,8 +67,8 @@ class ParentManager():
     def find_all_parents(self) -> list[Parent]:
         out = []
         
-        for parent_dict in self.repo.find_all('parent'):
+        for parent_dict in self.repo.find_all('parent:*'):
             child_dict = self.repo.get(f'child:{parent_dict["child_id"]}')
-            out.append(Parent.load_from_dict(parent))
+            out.append(Parent.load_from_dict(parent_dict, child_dict))
 
         return out
