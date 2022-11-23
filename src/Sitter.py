@@ -1,17 +1,16 @@
-from uuid import UUID, uuid4
-
 class Sitter():
     """Bazowa klasa opiekunki dla dzieci"""
 
-    _id: UUID
-    first_name: str 
-    last_name: str 
-    base_price: float 
-    is_available: bool 
+    _id: int
+    first_name: str
+    last_name: str
+    base_price: float
+    is_available: bool
 
     def __init__(
-        self, 
-        first_name: str, 
+        self,
+        _id: int,
+        first_name: str,
         last_name: str,
         base_price: float
     ):
@@ -24,11 +23,11 @@ class Sitter():
         if base_price <= 0:
             raise ValueError("Cena podstawowa powinna byc wieksza od zera.")
 
+        self._id = _id
         self.first_name = first_name
         self.last_name = last_name
         self.base_price = base_price
         self.is_available = True
-        self._id = uuid4()
 
     def get_actual_price(self) -> float:
         return self.base_price
@@ -38,7 +37,7 @@ class Sitter():
 
     def as_dict(self) -> dict:
         return {
-            '_id': self._id.__str__(),
+            '_id': self._id,
             'first_name': self.first_name,
             'last_name': self.last_name,
             'base_price': self.base_price,
@@ -48,8 +47,9 @@ class Sitter():
 
     @staticmethod
     def load_from_dict(sitter: dict) -> object:
-        s = Sitter(sitter['first_name'], sitter['last_name'], sitter['base_price'])
-        s._id = sitter['_id']
-
-        return s
-        
+        return Sitter(
+            sitter['_id'],
+            sitter['first_name'],
+            sitter['last_name'],
+            sitter['base_price']
+            )
