@@ -22,7 +22,7 @@ class Repository():
 
     def __init__(self):
         self.dc = DatabaseClient()
-        
+
     def add(self, name: str, value: object, overwrite: bool = False):
         if type(value) == dict: # dodajemy nowy obiekt klasy w postaci json
             result = self.dc.db.json().set(name, self.dc.json_root, value, nx=not overwrite)
@@ -52,7 +52,7 @@ class Repository():
 
         if keys:
             return self.dc.db.json().mget(keys, self.dc.json_root)
-        
+
         return []
 
     def find_by(self, prefix: str, predicate: dict) -> list[dict]:
@@ -69,5 +69,5 @@ class Repository():
 
             if matching:
                 out.append(obj)
-        
+
         return out

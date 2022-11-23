@@ -52,7 +52,7 @@ class AcademicSitter(Sitter):
             '_id': self._id,
             'bonus': self.bonus,
             'max_age': self.max_age,
-            'sitter': sitter,
+            'sitter_id': self.sitter_id,
             'type': 'academic'
         }
 
