@@ -2,11 +2,7 @@ from Repository import Repository
 from Child import Child
 from Parent import Parent
 
-from uuid import UUID
-
 class ParentManager():
-    collection_name = 'parents'
-
     def __init__(self):
         self.repo = Repository()
 
@@ -19,32 +15,39 @@ class ParentManager():
             child: Child
     ) -> Parent:
 
-        parent = Parent(parent_name, address, phone_number, is_teaching_required, child)
-        self.repo.add(self.collection_name, parent.as_dict())
+        # obecnie najwieksze uzywane id rodzica
+        new_parent_id = self.repo.get('parent_id') + 1
+        parent = Parent(new_parent_id, parent_name, address, phone_number, is_teaching_required, child)
+
+        # dodanie do bazy danych
+        self.repo.add(f'parent:{new_parent_id}', parent.as_dict())
+
         return parent
 
-    def remove_parent(self, parent: Parent):
-        # returns number of deleted documents
-        return self.repo.remove(self.collection_name, parent.as_dict())
+    def remove_parent(self, parent: Parent) -> bool:
+        # zwraca prawde jezeli uda sie usunac obiekt z bazy danych
+        return True if self.repo.remove(f'parent:{parent._id}') == 1 else False
 
-    def get_parent(self, parent_id: str) -> Parent:
-        parent_dict = self.repo.get(self.collection_name, parent_id)
-        return Parent.load_from_dict(parent_dict)
+    def get_parent(self, parent_id: int) -> Parent:
+        parent_dict = self.repo.get(f'parent:{parent_id}')
+        child_dict = self.repo.get(f'child:{parent_dict["child_id"]}')
 
-    def find_parents(self, filter) -> list[Parent]:
+        return Parent.load_from_dict(parent_dict, child_dict)
+
+    def find_parents(self, predicate: dict) -> list[Parent]:
         out = []
 
-        parents_dict = self.repo.find_by(self.collection_name, filter)
-        for parent in parents_dict:
-            out.append(Parent.load_from_dict(parent))
+        for parent_dict in self.repo.find_by('parent', predicate):
+            child_dict = self.repo.get(f'child:{parent_dict["child_id"]}')
+            out.append(Parent.load_from_dict(parent_dict, child_dict))
 
         return out
 
     def find_all_parents(self) -> list[Parent]:
         out = []
-
-        parents_dict = self.repo.find_all(self.collection_name)
-        for parent in parents_dict:
+        
+        for parent_dict in self.repo.find_all('parent'):
+            child_dict = self.repo.get(f'child:{parent_dict["child_id"]}')
             out.append(Parent.load_from_dict(parent))
 
         return out
