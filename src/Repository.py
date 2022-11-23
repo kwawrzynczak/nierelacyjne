@@ -2,16 +2,22 @@ from DatabaseClient import DatabaseClient, DatabaseError
 from redis import ResponseError
 
 class Repository():
-    """klasa zajmujaca sie obsluga danych z bazy danych
-        Przedrostki klucza (w zaleznosci od klasy):
-            - sitter
-            - housekeeper
-            - academic
-            - child
-            - parent
-            - reservation
+    """
+    klasa zajmujaca sie obsluga danych z bazy danych
+    Przedrostki klucza (w zaleznosci od klasy):
+        - sitter
+        - housekeeper
+        - academic
+        - child
+        - parent
+        - reservation
 
         Przyklad: sitter:1 -> pokojowka z _id = 1
+
+    Oprocz wlasciwych obiektow przechowujemy jeszcze liczbe obecnie przechowywanych obiektow
+
+        Przyklad: parent_id = 3 -> mamy 3 obiekty rodzicow w bazie danych
+        id zostaje takie samo po usunieciu jakiegos obiektu
     """
 
     def __init__(self):
