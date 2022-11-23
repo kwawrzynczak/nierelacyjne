@@ -1,22 +1,20 @@
 from Sitter import Sitter
 
-from uuid import UUID, uuid4
-
 class Housekeeper(Sitter):
     """Klasa pomocy domowej"""
 
-    _id: UUID
-    sitter_id: UUID
-    
+    _id: int
+    sitter_id: int
+
     def __init__(self, first_name: str, last_name: str, base_price: float):
         super().__init__(first_name, last_name, base_price)
         self.sitter_id = super()._id
-        self._id = uuid4()
+        self._id = int
 
-    def get_actual_price(self) -> float: 
+    def get_actual_price(self) -> float:
         return self.base_price
 
-    def get_sitter_info(self) -> str: 
+    def get_sitter_info(self) -> str:
         out = f'ID opiekunki: {self.id}\n'
         out += f'Opiekunka {self.first_name} {self.last_name}\n'
         out += 'Pomoc domowa\n'
@@ -31,7 +29,7 @@ class Housekeeper(Sitter):
         sitter = super().as_dict()
 
         return {
-            '_id': self._id.__str__(),
+            '_id': self._id,
             'sitter': sitter,
             'type': 'housekeeper',
         }

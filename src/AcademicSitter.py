@@ -1,35 +1,33 @@
 from Sitter import Sitter
 
-from uuid import UUID, uuid4
-
 class AcademicSitter(Sitter):
     """Opiekunka akademicka posiada zdolnosc do nauczania dziecka"""
 
-    _id: UUID
-    sitter_id: UUID
-    bonus: float 
-    max_age: int 
+    _id: int
+    sitter_id: int
+    bonus: float
+    max_age: int
 
     def __init__(
-        self, 
-        first_name: str, 
-        last_name: str, 
+        self,
+        first_name: str,
+        last_name: str,
         base_price: float,
         bonus: float,
         max_age: int
     ):
         if bonus <= 1:
-            raise ValueError("Mnoznik bonusu musi byc wiekszy od 1.") 
+            raise ValueError("Mnoznik bonusu musi byc wiekszy od 1.")
 
         if max_age < 1:
             raise ValueError("Maksymalny wiek dziecka nieprawidlowy!")
-        
+
         self.bonus = bonus
         self.max_age = max_age
-        
+
         super().__init__(first_name, last_name, base_price)
         self.sitter_id = super()._id
-        self._id = uuid4()
+        self._id = int
 
     def get_actual_price(self) -> float:
         return self.base_price * self.bonus
@@ -41,7 +39,7 @@ class AcademicSitter(Sitter):
         out += f'Cena podstawowa: {self.base_price}\n'
         out += f'Mnoznik bonusu: {self.bonus}\n'
         out += f'Maksymalny wiek dziecka do nauczania: {self.max_age}\n'
-        
+
         return out
 
     def get_max_age(self) -> int:
@@ -51,7 +49,7 @@ class AcademicSitter(Sitter):
         sitter = super().as_dict()
 
         return {
-            '_id': self._id.__str__(),
+            '_id': self._id,
             'bonus': self.bonus,
             'max_age': self.max_age,
             'sitter': sitter,
