@@ -2,7 +2,7 @@ from Sitter import Sitter
 from Housekeeper import Housekeeper
 from AcademicSitter import AcademicSitter
 from Repository import Repository
-
+from DatabaseClient import DatabaseError
 
 class SitterManager():
 
@@ -20,25 +20,34 @@ class SitterManager():
     ) -> Sitter:
 
         if collection_name == 'sitters':
-            sid = self.repo.get('sitter_id')
-            new_sitter_id = sid + 1 if sid != None else 1
+            try:
+                sid = int(self.repo.get('sitter_id'))
+                new_sitter_id = sid + 1
+            except DatabaseError:
+                new_sitter_id = 1
+
             sitter = Sitter(new_sitter_id, first_name, last_name, base_price)
-            self.repo.add(f'sitter:{new_sitter_id}', sitter.as_dict())
+            self.repo.add(f'sitter:{new_sitter_id}', sitter.as_dict(), overwrite=True)
             self.repo.add('sitter_id', new_sitter_id, overwrite=True)
 
-
         if collection_name == 'housekeepers':
-            hid = self.repo.get('housekeeper_id')
-            new_housekeeper_id = hid + 1 if hid != None else 1
+            try:
+                hid = int(self.repo.get('housekeeper_id'))
+                new_sitter_id = hid + 1
+            except DatabaseError:
+                new_sitter_id = 1
+
             sitter = Housekeeper(new_housekeeper_id, first_name, last_name, base_price)
             self.repo.add(f'housekeeper:{new_housekeeper_id}', sitter.as_dict())
             self.repo.add('housekeeper_id', new_housekeeper_id, overwrite=True)
 
-
-
         if collection_name == 'academic_sitters':
-            aid = self.repo.get('academic_id')
-            new_academic_id = aid + 1 if aid != None else 1
+            try:
+                aid = int(self.repo.get('academic_id'))
+                new_sitter_id = aid + 1
+            except DatabaseError:
+                new_sitter_id = 1
+
             sitter = AcademicSitter(new_academic_id, first_name, last_name, base_price, bonus, max_age)
             self.repo.add(f'academic:{new_academic_id}', sitter.as_dict())
             self.repo.add('academic_id', new_academic_id, overwrite=True)

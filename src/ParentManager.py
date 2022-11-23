@@ -26,7 +26,7 @@ class ParentManager():
 
         child = Child(new_child_id, child_name, child_age)
         self.repo.add(f'child:{new_child_id}', child.as_dict())
-        self.repo.add('child_id', new_child_id)
+        self.repo.add('child_id', new_child_id, overwrite=True)
 
         # obecnie najwieksze uzywane id rodzica
         try:

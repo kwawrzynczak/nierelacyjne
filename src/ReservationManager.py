@@ -21,7 +21,7 @@ class ReservationManager():
     ) -> Reservation:
 
         try:
-            rid = self.repo.get('reservation_id')
+            rid = int(self.repo.get('reservation_id'))
             new_reservation_id = rid + 1
         except DatabaseError:
             new_reservation_id = 1
@@ -60,7 +60,7 @@ class ReservationManager():
     def find_all_reservations(self) -> list[Reservation]:
         out = []
 
-        for reservation_dict in self.repo.find_all('reservation'):
+        for reservation_dict in self.repo.find_all('reservation:*'):
             sitter_dict = self.repo.get(reservation_dict['sitter_id'])
             parent_dict = self.repo.get(f'parent:{reservation_dict["parent_id"]}')
             child_dict = self.repo.get(f'child:{parent_dict["child_id"]}')

@@ -72,11 +72,11 @@ class Reservation():
 
     def as_dict(self) -> dict:
         if type(self.sitter) == Sitter:
-            sitter_prefix = 'sitter:'
+            sitter_prefix = 'sitter'
         elif type(self.sitter) == Housekeeper:
-            sitter_prefix = 'housekeeper:'
+            sitter_prefix = 'housekeeper'
         elif type(self.sitter) == AcademicSitter:
-            sitter_prefix = 'academic:'
+            sitter_prefix = 'academic'
 
         return {
             '_id': self._id,
@@ -91,9 +91,9 @@ class Reservation():
     @staticmethod
     def load_from_dict(reservation: dict, sitter: dict, parent: dict, child: dict) -> object:
         sitter_type = sitter['type']
-        if sitter_type == 'sitter': s = Sitter.load_from_dict(reservation['sitter'])
-        elif sitter_type == 'housekeeper': s = Housekeeper.load_from_dict(reservation['sitter'])
-        elif sitter_type == 'academic': s = AcademicSitter.load_from_dict(reservation['sitter'])
+        if sitter_type == 'sitter':         s = Sitter.load_from_dict(sitter)
+        elif sitter_type == 'housekeeper':  s = Housekeeper.load_from_dict(sitter)
+        elif sitter_type == 'academic':     s = AcademicSitter.load_from_dict(sitter)
         else: s = None
 
         return Reservation(
@@ -102,6 +102,6 @@ class Reservation():
             reservation['start_hour'],
             reservation['end_hour'], 
             s,
-            Parent.load_from_dict(parent, Child.load_from_dict(child)),
+            Parent.load_from_dict(parent, child),
             reservation['can_teach']
         )

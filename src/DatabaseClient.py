@@ -13,6 +13,7 @@ class DatabaseClient():
         self.db = redis.Redis(
             host='localhost',
             port=6379,
+            db=1,
         )
 
 class DatabaseError(Exception):
