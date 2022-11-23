@@ -22,6 +22,9 @@ class ParentManager():
         # dodanie do bazy danych
         self.repo.add(f'parent:{new_parent_id}', parent.as_dict())
 
+        # update parent_id
+        self.repo.add('parent_id', new_parent_id, overwrite=True)
+
         return parent
 
     def remove_parent(self, parent: Parent) -> bool:
