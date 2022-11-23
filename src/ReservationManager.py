@@ -4,6 +4,7 @@ from Sitter import Sitter
 from Housekeeper import Housekeeper
 from AcademicSitter import AcademicSitter
 from Parent import Parent
+from DatabaseClient import DatabaseError
 
 class ReservationManager():
     def __init__(self):
@@ -19,8 +20,11 @@ class ReservationManager():
         can_teach: bool
     ) -> Reservation:
 
-        rid = self.repo.get('reservation_id')
-        new_reservation_id = rid + 1 if rid != None else 1
+        try:
+            rid = self.repo.get('reservation_id')
+            new_reservation_id = rid + 1
+        except DatabaseError:
+            new_reservation_id = 1
 
         reservation = Reservation(new_reservation_id, date, start_hour, end_hour, sitter, parent, can_teach)
         self.repo.add(f'reservation:{new_reservation_id}', reservation.as_dict())

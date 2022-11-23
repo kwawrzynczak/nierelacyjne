@@ -1,6 +1,7 @@
 from Repository import Repository
 from Child import Child
 from Parent import Parent
+from DatabaseClient import DatabaseError
 
 class ParentManager():
     def __init__(self):
@@ -16,8 +17,12 @@ class ParentManager():
     ) -> Parent:
 
         # obecnie najwieksze uzywane id rodzica
-        pid = self.repo.get('parent_id')
-        new_parent_id = pid + 1 if pid != None else 1
+        try:
+            pid = self.repo.get('parent_id')
+            new_parent_id = pid + 1
+        except DatabaseError: # parent_id doesnt exist yet
+            new_parent_id = 1
+
         parent = Parent(new_parent_id, parent_name, address, phone_number, is_teaching_required, child)
 
         # dodanie do bazy danych
