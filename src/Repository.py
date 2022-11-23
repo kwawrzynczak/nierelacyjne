@@ -30,7 +30,7 @@ class Repository():
         json = self.dc.db.json().delete(name)
         return self.dc.db.delete(name) + json
 
-    def get(self, name: str) -> object:
+    def get(self, name: str) -> dict:
         try:
             result = self.dc.db.get(name)
         except ResponseError: # chcemy dostac obiekt klasy
