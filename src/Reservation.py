@@ -3,14 +3,12 @@ from Housekeeper import Housekeeper
 from AcademicSitter import AcademicSitter
 from Parent import Parent
 
-from uuid import UUID, uuid4
-
 class Reservation():
     """Kumuluje wszystkie dane potrzebne do utworzenia rezerwacji"""
 
-    _id: UUID
-    sitter_id: UUID
-    parent_id: UUID 
+    _id: int
+    sitter_id: int
+    parent_id: int 
     date: str 
     start_hour: int 
     end_hour: int 
@@ -18,6 +16,7 @@ class Reservation():
 
     def __init__(
         self, 
+        _id: int,
         date: str, 
         start_hour: int, 
         end_hour: int,
@@ -38,16 +37,16 @@ class Reservation():
         if parent is None:
             raise ValueError("Obiekt rodzica jest nieprawidlowy!")
 
+        self._id = _id
+        self.parent_id = parent._id
+        self.sitter_id = sitter._id
+
         self.date = date
         self.start_hour = start_hour
         self.end_hour = end_hour
         self.sitter = sitter
         self.parent = parent
         self.can_teach = can_teach
-
-        self._id = uuid4()
-        self.parent_id = self.parent._id
-        self.sitter_id = self.sitter._id
 
     def get_reservation_time(self) -> int:
         return self.end_hour - self.start_hour
@@ -72,30 +71,37 @@ class Reservation():
         self.sitter = new_sitter
 
     def as_dict(self) -> dict:
-        sitter = self.sitter.as_dict()
-        parent = self.parent.as_dict()
+        if type(self.sitter) == Sitter:
+            sitter_prefix = 'sitter:'
+        elif type(self.sitter) == Housekeeper:
+            sitter_prefix = 'housekeeper:'
+        elif type(self.sitter) == AcademicSitter:
+            sitter_prefix = 'academic:'
 
         return {
-            '_id': self._id.__str__(),
+            '_id': self._id,
+            'sitter_id': f'{sitter_prefix}:{self.sitter._id}',
+            'parent_id': self.parent._id,
             'date': self.date,
             'start_hour': self.start_hour,
             'end_hour': self.end_hour,
             'can_teach': self.can_teach,
-            'sitter': sitter,
-            'parent': parent
         }
 
     @staticmethod
-    def load_from_dict(reservation: dict) -> object:
-        sitter_type = reservation['sitter']['type']
+    def load_from_dict(reservation: dict, sitter: dict, parent: dict, child: dict) -> object:
+        sitter_type = sitter['type']
+        if sitter_type == 'sitter': s = Sitter.load_from_dict(reservation['sitter'])
+        elif sitter_type == 'housekeeper': s = Housekeeper.load_from_dict(reservation['sitter'])
+        elif sitter_type == 'academic': s = AcademicSitter.load_from_dict(reservation['sitter'])
+        else: s = None
 
-        if sitter_type == 'sitter': sitter = Sitter.load_from_dict(reservation['sitter'])
-        elif sitter_type == 'housekeeper': sitter = Housekeeper.load_from_dict(reservation['sitter'])
-        elif sitter_type == 'academic': sitter = AcademicSitter.load_from_dict(reservation['sitter'])
-        else: sitter = None
-
-        parent = Parent.load_from_dict(reservation['parent'])
-
-        r = Reservation(reservation['date'], reservation['start_hour'], reservation['end_hour'], sitter, parent, reservation['can_teach'])
-
-        return r
+        return Reservation(
+            reservation['_id'],
+            reservation['date'], 
+            reservation['start_hour'],
+            reservation['end_hour'], 
+            s,
+            Parent.load_from_dict(parent, Child.load_from_dict(child)),
+            reservation['can_teach']
+        )

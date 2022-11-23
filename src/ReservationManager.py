@@ -5,11 +5,7 @@ from Housekeeper import Housekeeper
 from AcademicSitter import AcademicSitter
 from Parent import Parent
 
-from uuid import UUID
-
 class ReservationManager():
-    collection_name = 'reservations'
-
     def __init__(self):
         self.repo = Repository()
 
@@ -23,23 +19,49 @@ class ReservationManager():
         can_teach: bool
     ) -> Reservation:
 
-        reservation = Reservation(date, start_hour, end_hour, sitter, parent, can_teach)
-        self.repo.add(self.collection_name, reservation.as_dict())
+        rid = self.repo.get('reservation_id')
+        new_reservation_id = rid + 1 if rid != None else 1
+
+        reservation = Reservation(new_reservation_id, date, start_hour, end_hour, sitter, parent, can_teach)
+        self.repo.add(f'reservation:{new_reservation_id}', reservation.as_dict())
+
+        self.repo.add('reservation_id', new_reservation_id, overwrite=True)
+
         return reservation
 
-    def remove_reservation(self, reservation: Reservation) -> int:
-        return self.repo.remove(self.collection_name, reservation.as_dict())
+    def remove_reservation(self, reservation: Reservation) -> bool:
+        return True if self.repo.remove(f'reservation:{reservation._id}') == 1 else False
 
-    def get_reservation(self, reservation_id: str) -> Reservation:
-        reservation_dict = self.repo.get(self.collection_name, reservation_id)
-        return Reservation.load_from_dict(reservation_dict)
+    def get_reservation(self, reservation_id: int) -> Reservation:
+        reservation_dict = self.repo.get(f'reservation:{reservation_id}')
+        sitter_dict = self.repo.get(reservation_dict['sitter_id'])
+        parent_dict = self.repo.get(f'parent:{reservation_dict["parent_id"]}')
+        child_dict = self.repo.get(f'child:{parent_dict["child_id"]}')
 
-    def find_reservations(self, filter) -> list[Reservation]:
-        reservations_dict = self.repo.find_by(self.collection_name, filter)
-        return [Reservation.load_from_dict(r) for r in reservations_dict]
+        return Reservation.load_from_dict(reservation_dict, sitter_dict, parent_dict, child_dict)
+
+    def find_reservations(self, predicate: dict) -> list[Reservation]:
+        out = []
+
+        for reservation_dict in self.repo.find_by('reservation', predicate):
+            sitter_dict = self.repo.get(reservation_dict['sitter_id'])
+            parent_dict = self.repo.get(f'parent:{reservation_dict["parent_id"]}')
+            child_dict = self.repo.get(f'child:{parent_dict["child_id"]}')
+
+            out.append(Reservation.load_from_dict(reservation_dict, sitter_dict, parent_dict, child_dict))
+
+        return out
+
 
     def find_all_reservations(self) -> list[Reservation]:
-        reservations_dict = self.repo.find_all(self.collection_name)
-        return [Reservation.load_from_dict(r) for r in reservations_dict]
+        out = []
 
+        for reservation_dict in self.repo.find_all('reservation'):
+            sitter_dict = self.repo.get(reservation_dict['sitter_id'])
+            parent_dict = self.repo.get(f'parent:{reservation_dict["parent_id"]}')
+            child_dict = self.repo.get(f'child:{parent_dict["child_id"]}')
+
+            out.append(Reservation.load_from_dict(reservation_dict, sitter_dict, parent_dict, child_dict))
+
+        return out
         
