@@ -25,7 +25,7 @@ class Repository():
         
     def add(self, name: str, value: object, overwrite: bool = False):
         if type(value) == dict: # dodajemy nowy obiekt klasy w postaci json
-            result = self.dc.db.json().set(name, self.dc.json_root, value)
+            result = self.dc.db.json().set(name, self.dc.json_root, value, nx=not overwrite)
         else: # cos innego
             result = self.dc.db.set(name, value, nx=not overwrite)
 
@@ -50,7 +50,10 @@ class Repository():
     def find_all(self, prefix: str) -> list[dict]:
         _, keys = self.dc.db.scan(match=prefix)
 
-        return self.dc.db.json().mget(keys, self.dc.json_root)
+        if keys:
+            return self.dc.db.json().mget(keys, self.dc.json_root)
+        
+        return []
 
     def find_by(self, prefix: str, predicate: dict) -> list[dict]:
         _, keys = self.dc.db.scan(match=prefix)
