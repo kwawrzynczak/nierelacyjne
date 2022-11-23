@@ -66,8 +66,12 @@ class Parent():
         }
 
     @staticmethod
-    def load_from_dict(parent: dict) -> object:
-        repo = Repository()
-        c = Child.load_from_dict(repo.get(f'child:{parent["child_id"]}'))
-
-        return Parent(parent['_id'], parent['name'], parent['address'], parent['phone_number'], parent['is_teaching_required'], c)
+    def load_from_dict(parent: dict, child: dict) -> object:
+        return Parent(
+            parent['_id'], 
+            parent['name'], 
+            parent['address'], 
+            parent['phone_number'], 
+            parent['is_teaching_required'], 
+            Child.load_from_dict(child),
+        )
