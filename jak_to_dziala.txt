@@ -1,0 +1,8 @@
+1. Zaproponuj dane, które należałoby trzymać w cache’u.
+    - wszystkie nowe obiekty opiekunek, rodzicow (bez rezerwacji)
+    - podczas tworzenia
+    - podczas pobierania (dodac gdy nie ma jej w cache’u)
+
+3. Zaproponuj kiedy i gdzie powinny być odświeżane dane w cache’u (inwalidacja cache’a)
+    - ustawienie wygasniecia danych (jakies 20 sekund)
+    - automatyczne usuniecie starych danych
