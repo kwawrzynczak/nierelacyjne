@@ -11,5 +11,5 @@ parent = pm.create_parent('Brajan', 'Sulejowska', '123123123', True, Child('Janu
 sitter = sm.create_sitter('sitters', 'Nielubi', 'Dzieci', 420)
 reservation = rm.create_reservation('10/11/2022', 12, 14, sitter, parent, True)
 
-for r in rm.find_all_reservations():
-    print(r.get_reservation_info())
+rm.remove_reservation(reservation)
+print(pm.get_parent(str(parent._id)).get_parent_info())
