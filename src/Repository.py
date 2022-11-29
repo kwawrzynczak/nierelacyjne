@@ -28,8 +28,8 @@ class Repository():
         if not use_cache:
             return self._get_from_db(collection_name, _id)
 
-        from_cache = self._get_from_cache(f'{collection_name}:{id}')
-        if not from_cache: # tried to get from cache but failed
+        doc = self._get_from_cache(f'{collection_name}:{_id}')
+        if not doc: # tried to get from cache but failed
             doc = self._get_from_db(collection_name, _id)
             self._add_to_cache(f'{collection_name}:{_id}', doc)
 
