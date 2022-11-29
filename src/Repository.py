@@ -19,6 +19,8 @@ class Repository():
         return inserted_id
 
     def remove(self, collection_name: str, document: dict) -> int:
+        # in case it was also stored in cache
+        self.cache.json().delete(f'{collection_name}:{document["_id"]}')
         collection = self.db[collection_name]
         return collection.delete_one({ '_id': document['_id'] }).deleted_count
 
