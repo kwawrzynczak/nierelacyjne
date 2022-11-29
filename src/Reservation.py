@@ -97,5 +97,6 @@ class Reservation():
         parent = Parent.load_from_dict(reservation['parent'])
 
         r = Reservation(reservation['date'], reservation['start_hour'], reservation['end_hour'], sitter, parent, reservation['can_teach'])
+        r._id = reservation['_id']
 
         return r
