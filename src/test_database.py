@@ -1,8 +1,8 @@
-import unittest
+from unittest import TestCase
 from Repository import Repository
 from Child import Child
 
-class RepositoryTest(unittest.TestCase):
+class DatabaseTest(TestCase):
     collection_name = 'test_children'
     
     def test_repo(self):
@@ -25,6 +25,3 @@ class RepositoryTest(unittest.TestCase):
         repo.remove(self.collection_name, child.as_dict())
 
         self.assertEqual(len(repo.find_all(self.collection_name)), current_count - 1)
-
-if __name__ == '__main__':
-    unittest.main()
