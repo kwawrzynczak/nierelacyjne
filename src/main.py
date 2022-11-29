@@ -7,8 +7,7 @@ pm = ParentManager()
 sm = SitterManager()
 rm = ReservationManager()
 
-child = Child('Janusz', 49)
-parent = pm.create_parent('Brajan', 'Sulejowska', '123123123', True, child)
+parent = pm.create_parent('Brajan', 'Sulejowska', '123123123', True, Child('Janusz', 49))
 sitter = sm.create_sitter('sitters', 'Nielubi', 'Dzieci', 420)
 reservation = rm.create_reservation('10/11/2022', 12, 14, sitter, parent, True)
 
