@@ -1,5 +1,6 @@
 from redis import Redis 
 from redis.commands.json.path import Path
+from redis.exceptions import ConnectionError
 from yaml import safe_load, YAMLError
 
 class CacheClient():
@@ -22,17 +23,26 @@ class CacheClient():
         )
         
     def add(self, key: str, document: dict, expire_seconds: int=CACHE_EXPIRE_SECONDS) -> bool:
-        print(f'adding {key} to cache. data will expire after {expire_seconds} seconds')
-        result = self.cache.json().set(key, self.root_path, document)
-        self.cache.expire(key, expire_seconds)
+        try:
+            result = self.cache.json().set(key, self.root_path, document)
+            print(f'adding {key} to cache. data will expire after {expire_seconds} seconds')
+        except ConnectionError:
+            return
 
+        self.cache.expire(key, expire_seconds)
         return result
 
     def remove(self, key: str) -> int:
-        return self.cache.json().delete(key)
+        try:
+            return self.cache.json().delete(key)
+        except ConnectionError:
+            return
 
     def get(self, key: str) -> dict or None:
-        result = self.cache.json().get(key)
+        try:
+            result = self.cache.json().get(key)
+        except ConnectionError:
+            return
 
         if result: print(f'retrieved {key} from cache')
         else: print(f'failed to retrieve {key} from cache')
@@ -40,5 +50,8 @@ class CacheClient():
         return result
 
     def clear_cache(self) -> bool:
-        print('clearing cache')
-        return self.cache.flushdb()
+        try:
+            print('clearing cache')
+            return self.cache.flushdb()
+        except ConnectionError:
+            return
