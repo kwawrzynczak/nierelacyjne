@@ -1,24 +1,26 @@
 from pymongo import MongoClient
-from redis import Redis
-from redis.commands.json.path import Path
+from uuid import UUID
 
 class DatabaseClient():
     """Klient bazy danych"""
 
-    CACHE_EXPIRE_SECONDS = 20
-
     def __init__(self):
-        connection_string = 'mongodb://dsosnia:mIsFgTGBvDDG33JMgCqBCxAN9iPhNp5mee5cJVkPCWnCfQFoB5TJbHvB3Xj3uJAyUvur8bOTTZHz0Hux8PG4xg==@dsosnia.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@dsosnia@'
+        connection_string = 'mongodb://localhost:27017'
         client = MongoClient(connection_string)
 
-        # dostep do bazy dantch o nazwie 'nierelacyjne'
-        self.mongo_db = client['nierelacyjne']
+        self.db = client['nierelacyjne']
 
-        self.redis_db = Redis(
-            'localhost',
-            6379,
-            db=0
-        )
+    def add(self, collection_name: str, document: dict) -> UUID:
+        return self.db[collection_name].insert_one(document).inserted_id
 
-        self.cache_root = Path.root_path()
-        
+    def remove(self, collection_name: str, document: dict) -> int:
+        return self.db[collection_name].delete_one({ '_id': document['_id'] }).deleted_count
+
+    def get(self, collection_name: str, _id: UUID) -> dict or None:
+        return self.db[collection_name].find_one({ '_id': str(_id) })
+
+    def find_all(self, collection_name: str) -> list[dict]:
+        return list(self.db[collection_name].find())
+
+    def find_by(self, collection_name: str, projection: dict) -> list[dict]:
+        return list(self.db[collection_name].find(projection))
