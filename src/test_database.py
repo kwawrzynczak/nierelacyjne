@@ -1,27 +1,27 @@
 from unittest import TestCase
-from Repository import Repository
+from DatabaseClient import DatabaseClient
 from Child import Child
 
 class DatabaseTest(TestCase):
     collection_name = 'test_children'
     
-    def test_repo(self):
-        repo = Repository()
+    def test_db(self):
+        dc = DatabaseClient()
 
-        # adding an object to repo
-        current_count = len(repo.find_all(self.collection_name))
+        # adding an object to db
+        current_count = len(dc.find_all(self.collection_name))
 
         child = Child('Jonathan', 5)
-        repo.add(self.collection_name, child.as_dict())
+        dc.add(self.collection_name, child.as_dict())
 
-        self.assertEqual(len(repo.find_all(self.collection_name)), current_count + 1)
+        self.assertEqual(len(dc.find_all(self.collection_name)), current_count + 1)
 
         # ensure id values of object and database document are the same
-        self.assertEqual(child._id.__str__(), repo.find_by(self.collection_name, { 'name': 'Jonathan' })[-1]['_id'])
+        self.assertEqual(child._id.__str__(), dc.find_by(self.collection_name, { 'name': 'Jonathan' })[-1]['_id'])
 
-        # removing from repo
-        current_count = len(repo.find_all(self.collection_name))
+        # removing fromdc 
+        current_count = len(dc.find_all(self.collection_name))
         
-        repo.remove(self.collection_name, child.as_dict())
+        dc.remove(self.collection_name, child.as_dict())
 
-        self.assertEqual(len(repo.find_all(self.collection_name)), current_count - 1)
+        self.assertEqual(len(dc.find_all(self.collection_name)), current_count - 1)
