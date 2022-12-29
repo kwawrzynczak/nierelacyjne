@@ -51,11 +51,11 @@ class DatabaseSession():
     def update(self, obj: DatabaseObject):
         self.session.execute(obj.update_data())
 
-    def get(self, table_name: str, _id: UUID) -> tuple:
+    def get(self, _id: UUID, table_name: str, table_id_col: str=None) -> tuple:
         return self.session.execute(
             f"""
             SELECT * FROM {table_name}
-            WHERE {table_name[0]}_id = {str(_id)};
+            WHERE {table_id_col if table_id_col != None else table_name[0]} = {str(_id)};
             """
         ).one()
 
@@ -63,5 +63,5 @@ class DatabaseSession():
         return list(self.session.execute(f"SELECT * FROM {table_name};"))
 
     def find_by(self, table_name: str, where_sql_clause: str) -> list[tuple]:
-        return list(self.session.execute(f"SELECT * FROM {table_name} WHERE {where_sql_clause};"))
+        return list(self.session.execute(f"SELECT * FROM {table_name} WHERE {where_sql_clause} ALLOW FILTERING;"))
         
