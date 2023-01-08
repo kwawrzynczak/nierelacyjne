@@ -1,20 +1,42 @@
+from DatabaseObject import DatabaseObject
 from Child import Child
-from Base import Base
-from sqlalchemy import Column, Integer, String, Boolean, false, ForeignKey
-from sqlalchemy.orm import relationship
 
-class Parent(Base):
+from uuid import uuid4
+from collections import namedtuple
+
+class Parent(DatabaseObject):
     """Klasa rodzica odpowiedzialna za wynajmowanie opiekunki dla dziecka"""
 
-    __tablename__ = 'parents'
-    id = Column(Integer, autoincrement=True, primary_key=True) 
-    parent_name = Column(String(50), nullable=False)
-    address = Column(String(255), nullable=False)
-    phone_number = Column(String(12), nullable=False)
-    is_teaching_required = Column(Boolean, default=False)
+    table_name = 'parents'
 
-    child_id = Column(Integer, ForeignKey(Child.id))
-    child = relationship(Child)
+    @staticmethod
+    def create_from_row(db_row: namedtuple) -> object:
+        p = Parent(db_row.p_name, db_row.p_address, db_row.p_phone_number, db_row.p_teaching_required, Child.create_from_row(db_row))
+        p.p_id = db_row.p_id
+        return p
+
+    def add_to_database(self) -> str:
+        return f"""
+        INSERT INTO {self.table_name}(p_id, p_name, p_address, p_phone_number, p_teaching_required, c_id, c_name, c_age)
+        VALUES({self.p_id}, '{self.p_name}', '{self.p_address}', '{self.p_phone_number}', {self.p_teaching_required}, {self.p_child.c_id}, '{self.p_child.c_name}', {self.p_child.c_age});
+        """
+
+    def delete_from_database(self) -> str:
+        return f"""
+        DELETE FROM {self.table_name}
+        WHERE p_id = {self.p_id};
+        """
+
+    def update_data(self) -> str:
+        return f"""
+        UPDATE {self.table_name}
+        SET
+            p_name = '{self.p_name}',
+            p_address = '{self.p_address}',
+            p_phone_number = '{self.p_phone_number}',
+            p_teaching_required = {self.p_teaching_required}
+        WHERE p_id = {self.p_id};
+        """
 
     def __init__(
         self, 
@@ -36,23 +58,24 @@ class Parent(Base):
         if child is None:
             raise ValueError("Obiekt dziecka nie istnieje!")
 
-        self.parent_name = parent_name
-        self.address = address
-        self.phone_number = phone_number
-        self.is_teaching_required = is_teaching_required
-        self.child = child
+        self.p_id = uuid4()
+        self.p_name = parent_name
+        self.p_address = address
+        self.p_phone_number = phone_number
+        self.p_teaching_required = is_teaching_required
+        self.p_child = child
 
     def get_parent_info(self) -> str:
-        out = f'Imie: {self.parent_name}\n'
-        out += f'Imie dziecka: {self.child.child_name}\n'
-        out += f'Adres zamieszkania: {self.address}\n'
-        out += f'Numer telefonu: {self.phone_number}\n'
-        out += f'UWAGI: Wymagana pomoc w nauce\n' if self.is_teaching_required else ''
+        out = f'Imie: {self.p_name}\n'
+        out += f'Imie dziecka: {self.p_child.c_name}\n'
+        out += f'Adres zamieszkania: {self.p_address}\n'
+        out += f'Numer telefonu: {self.p_phone_number}\n'
+        out += f'UWAGI: Wymagana pomoc w nauce\n' if self.p_teaching_required else ''
 
         return out
 
     def get_child_info(self) -> str:
-        out = f'Imie rodzica: {self.parent_name}\n'
-        out += self.child.get_child_info()
+        out = f'Imie rodzica: {self.p_name}\n'
+        out += self.p_child.get_child_info()
 
         return out
