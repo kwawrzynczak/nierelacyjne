@@ -1,5 +1,8 @@
 from DatabaseSession import DatabaseSession
-from Base import Base
+from DatabaseObject import DatabaseObject
+
+from uuid import UUID
+from collections import namedtuple
 
 class Repository():
     """klasa zajmujaca sie obsluga danych z bazy danych"""
@@ -7,35 +10,17 @@ class Repository():
     def __init__(self):
         self.ds = DatabaseSession()
         
-    def add(self, obj: Base):
-        db = self.ds.create_new_session()
-        db.add(obj)
-        db.commit()
-        db.close()
+    def add(self, obj: DatabaseObject):
+        self.ds.add(obj)
 
-    def remove(self, obj: Base):
-        db = self.ds.create_new_session()
-        db.delete(obj)
-        db.commit()
-        db.close()
+    def remove(self, obj: DatabaseObject):
+        self.ds.remove(obj)
 
-    def get(self, class_type: type, id: int) -> Base:
-        db = self.ds.create_new_session()
-        result = db.query(class_type).where(class_type.id == id)
-        db.close()
-        
-        return result
+    def get(self, _id: UUID, table_name: str, table_id_col: str=None) -> namedtuple:
+        return self.ds.get(_id, table_name, table_id_col)
 
-    def find_all(self, class_type: type) -> list[Base]:
-        db = self.ds.create_new_session()
-        result = db.query(class_type).all()
-        db.close()
+    def find_all(self, table_name: str) -> list[namedtuple]:
+        return self.ds.find_all(table_name)
 
-        return result
-
-    def find_by(self, class_type: type, predicate) -> list[Base]:
-        db = self.ds.create_new_session()
-        result = db.query(class_type).where(predicate)
-        db.close()
-
-        return result
+    def find_by(self, table_name: str, where_sql_clause: str) -> list[namedtuple]:
+        return self.ds.find_by(table_name, where_sql_clause)
