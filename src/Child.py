@@ -1,11 +1,18 @@
 from DatabaseObject import DatabaseObject
 
 from uuid import uuid4
+from collections import namedtuple
 
 class Child(DatabaseObject):
     """Dziecko, dla którego będzie wynajmowana opiekunka"""
 
     table_name = 'children'
+
+    @staticmethod
+    def create_from_row(db_row: namedtuple) -> object:
+        c = Child(db_row.c_name, db_row.c_age)
+        c.c_id = db_row.c_id
+        return c
 
     def add_to_database(self) -> str:
         return f"""
