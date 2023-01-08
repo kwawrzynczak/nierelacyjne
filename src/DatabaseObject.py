@@ -1,3 +1,4 @@
+from collections import namedtuple
 
 class DatabaseObject():
     """reprezentuje interfejs obiektu, ktory mozna dodac do bazy danych"""
@@ -14,4 +15,9 @@ class DatabaseObject():
 
     def update_data(self) -> str:
         """zwraca zapytanie sql aktualizujace dane w bazie danych"""
+        pass
+
+    @staticmethod
+    def create_from_row(db_row: namedtuple) -> object:
+        """zwraca obiekt z przechowywanych w bazie danych"""
         pass
