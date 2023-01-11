@@ -1,4 +1,4 @@
-from cassandra.cluster import Cluster, ExecutionProfile, ConsistencyLevel, EXEC_PROFILE_DEFAULT
+from cassandra.cluster import Cluster, ExecutionProfile, ConsistencyLevel, EXEC_PROFILE_DEFAULT, NoHostAvailable
 from cassandra.policies import LoadBalancingPolicy
 from cassandra.query import named_tuple_factory
 from uuid import UUID
@@ -31,7 +31,11 @@ class DatabaseSession():
             execution_profiles={ EXEC_PROFILE_DEFAULT: exec_profile },
         )
 
-        self.session = cluster.connect()
+        try:
+            self.session = cluster.connect()
+        except NoHostAvailable:
+            print('Nie udalo sie nawiazac polaczenia z baza danych')
+            exit(1)
 
         self.session.execute(
             """
