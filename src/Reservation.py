@@ -2,29 +2,58 @@ from Sitter import Sitter
 from Parent import Parent
 from Base import Base
 
-from sqlalchemy import Column, Integer, String, Date, ForeignKey, CheckConstraint, Boolean, false
-from sqlalchemy.sql import func
-from sqlalchemy.orm import relationship
+from Sitter import Sitter
+from Housekeeper import Housekeeper
+from AcademicSitter import AcademicSitter
+from Parent import Parent
+from DatabaseObject import DatabaseObject
 
-class Reservation(Base):
+from uuid import uuid4
+from collections import namedtuple
+
+class Reservation(DatabaseObject):
     """Kumuluje wszystkie dane potrzebne do utworzenia rezerwacji"""
 
-    __tablename__ = 'reservations'
-    __table_args__ = (
-        CheckConstraint('start_hour > 0 AND start_hour <= 24'),
-        CheckConstraint('end_hour> 0 AND end_hour <= 24')
-    )
+    table_name = 'reservations'
 
-    id = Column(Integer, autoincrement=True, primary_key=True) 
-    date = Column(Date, server_default=func.now())
-    start_hour = Column(Integer)
-    end_hour = Column(Integer)
-    sitter_id = Column(ForeignKey(Sitter.id), nullable=False)
-    parent_id = Column(ForeignKey(Parent.id), nullable=False)
-    can_teach = Column(Boolean, default=False)
+    @staticmethod
+    def create_from_row(db_row: namedtuple) -> object:
+        match db_row.s_sitter_type:
+            case 'sitter':      s = Sitter.create_from_row(db_row)
+            case 'housekeeper': s = Housekeeper.create_from_row(db_row)
+            case 'academic':    s = AcademicSitter.create_from_row(db_row)
+            
+        r = Reservation(db_row.r_date, db_row.r_start_hour, db_row.r_end_hour, s, Parent.create_from_row(db_row), db_row.p_teaching_required)
+        r.r_id = db_row.r_id
+        return r
 
-    sitter = relationship(Sitter)
-    parent = relationship(Parent)
+    def add_to_database(self) -> str:
+        return f"""
+        INSERT INTO {self.table_name}(r_id, r_date, r_start_hour, r_end_hour,
+            s_id, s_sitter_type, s_first_name, s_last_name, s_base_price, s_is_available, as_bonus, as_max_age,
+            p_id, p_name, p_address, p_phone_number, p_teaching_required,
+            c_id, c_name, c_age)
+        VALUES({self.r_id}, '{self.r_date}', {self.r_start_hour}, {self.r_end_hour},
+            {self.r_sitter.s_id}, '{self.r_sitter.sitter_type}', '{self.r_sitter.s_first_name}', '{self.r_sitter.s_last_name}', {self.r_sitter.s_base_price}, {self.r_sitter.s_is_available}, {self.r_sitter.as_bonus}, {self.r_sitter.as_max_age},
+            {self.r_parent.p_id}, '{self.r_parent.p_name}', '{self.r_parent.p_address}', '{self.r_parent.p_phone_number}', {self.r_parent.p_teaching_required},
+            {self.r_parent.p_child.c_id}, '{self.r_parent.p_child.c_name}', {self.r_parent.p_child.c_age});
+        """
+
+    def delete_from_database(self) -> str:
+        return f"""
+        DELETE FROM {self.table_name}
+        WHERE r_id = {self.r_id};
+        """
+
+    def update_data(self) -> str:
+        return f"""
+        UPDATE {self.table_name}
+        SET
+            r_date = '{self.r_date}',
+            r_start_hour = {self.r_start_hour},
+            r_end_hour = {self.r_end_hour},
+        WHERE r_id = {self.r_id};
+        """
 
     def __init__(
         self, 
