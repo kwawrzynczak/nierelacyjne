@@ -1,8 +1,4 @@
 from Sitter import Sitter
-from Parent import Parent
-from Base import Base
-
-from Sitter import Sitter
 from Housekeeper import Housekeeper
 from AcademicSitter import AcademicSitter
 from Parent import Parent
@@ -77,31 +73,32 @@ class Reservation(DatabaseObject):
         if parent is None:
             raise ValueError("Obiekt rodzica jest nieprawidlowy!")
 
-        self.date = date
-        self.start_hour = start_hour
-        self.end_hour = end_hour
-        self.sitter = sitter
-        self.parent = parent
-        self.can_teach = can_teach
+        self.r_id = uuid4()
+        self.r_date = date
+        self.r_start_hour = start_hour
+        self.r_end_hour = end_hour
+        self.r_sitter = sitter
+        self.r_parent = parent
+        self.r_can_teach = can_teach
 
     def get_reservation_time(self) -> int:
-        return self.end_hour - self.start_hour
+        return self.r_end_hour - self.r_start_hour
 
     def get_reservation_info(self) -> str:
         out = f'ID rezerwacji: {self.id}\n'
         out += f'ID rodzica: {self.parent_id}\n'
         out += f'ID opiekunki: {self.sitter_id}\n'
-        out += f'Data rezerwacji: {self.date}\n'
-        out += f'Rezerwacja od {self.start_hour} do {self.end_hour}\n'
+        out += f'Data rezerwacji: {self.r_date}\n'
+        out += f'Rezerwacja od {self.r_start_hour} do {self.r_end_hour}\n'
         out += f'Koszt rezerwacji: {self.get_reservation_cost()}\n'
 
         return out
 
     def get_reservation_cost(self) -> float:
-        return self.sitter.get_actual_price() * self.get_reservation_time()
+        return self.r_sitter.get_actual_price() * self.get_reservation_time()
 
     def set_sitter(self, new_sitter: Sitter):
         if new_sitter is None:
             raise ValueError("Obiekt nowej opiekunki nie istnieje!")
 
-        self.sitter = new_sitter
+        self.r_sitter = new_sitter
