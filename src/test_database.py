@@ -3,10 +3,8 @@ import unittest
 from DatabaseSession import DatabaseSession
 from Child import Child
 
-
 class TestChild(Child):
     table_name = 'test_children'
-
 
 class DatabaseTest(unittest.TestCase):
 
@@ -28,52 +26,44 @@ class DatabaseTest(unittest.TestCase):
         cls.ds.session.execute("DROP TABLE test_children;")
 
     def test_add(self):
-        row_count = self.ds.session.execute(
-            "SELECT COUNT(*) FROM test_children").one()[0]
+        row_count = self.ds.session.execute("SELECT COUNT(*) FROM test_children").one()[0]
 
         c = TestChild('Janusz', 49)
         self.ds.add(c)
 
-        current_row_count = self.ds.session.execute(
-            "SELECT COUNT(*) FROM test_children").one()[0]
+        current_row_count = self.ds.session.execute("SELECT COUNT(*) FROM test_children").one()[0]
         self.assertEqual(current_row_count, row_count + 1)
 
-        row = self.ds.session.execute(
-            f"SELECT * FROM test_children WHERE c_id = {c.c_id};").one()
+        row = self.ds.session.execute(f"SELECT * FROM test_children WHERE c_id = {c.c_id};").one()
         self.assertIsNotNone(row)
-
+        
     def test_delete(self):
         c = TestChild('Jerzy', 28)
         self.ds.add(c)
 
-        row_count = self.ds.session.execute(
-            "SELECT COUNT(*) FROM test_children").one()[0]
+        row_count = self.ds.session.execute("SELECT COUNT(*) FROM test_children").one()[0]
         self.assertTrue(row_count > 0)
 
-        row = self.ds.session.execute(
-            f"SELECT * FROM test_children WHERE c_id = {c.c_id};").one()
+        row = self.ds.session.execute(f"SELECT * FROM test_children WHERE c_id = {c.c_id};").one()
         self.assertEqual('Jerzy', row[2])
 
         self.ds.remove(c)
 
-        current_row_count = self.ds.session.execute(
-            "SELECT COUNT(*) FROM test_children").one()[0]
+        current_row_count = self.ds.session.execute("SELECT COUNT(*) FROM test_children").one()[0]
         self.assertEqual(current_row_count, row_count - 1)
 
     def test_update(self):
         c = TestChild('Ryszard', 68)
         self.ds.add(c)
 
-        row = self.ds.session.execute(
-            f"SELECT * FROM test_children WHERE c_id = {c.c_id};").one()
+        row = self.ds.session.execute(f"SELECT * FROM test_children WHERE c_id = {c.c_id};").one()
         self.assertEqual(68, row[1])
         self.assertEqual('Ryszard', row[2])
 
         c.c_age = 69
         self.ds.update(c)
 
-        row = self.ds.session.execute(
-            f"SELECT * FROM test_children WHERE c_id = {c.c_id};").one()
+        row = self.ds.session.execute(f"SELECT * FROM test_children WHERE c_id = {c.c_id};").one()
         self.assertEqual(69, row[1])
 
     def test_get(self):
@@ -117,7 +107,6 @@ class DatabaseTest(unittest.TestCase):
         self.assertEqual(1, len(rows))
         self.assertEqual(13, rows[0].c_age)
         self.assertEqual('Cc', rows[0].c_name)
-
 
 if __name__ == '__main__':
     unittest.main()

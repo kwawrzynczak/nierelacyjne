@@ -6,7 +6,6 @@ from collections import namedtuple
 
 from DatabaseObject import DatabaseObject
 
-
 class DatabaseSession():
     """Fabryka sesji korzystania z bazy danych"""
 
@@ -29,7 +28,7 @@ class DatabaseSession():
         cluster = Cluster(
             contact_points=CLUSTER_NODES,
             port=9042,
-            execution_profiles={EXEC_PROFILE_DEFAULT: exec_profile},
+            execution_profiles={ EXEC_PROFILE_DEFAULT: exec_profile },
         )
 
         self.session = cluster.connect()
@@ -43,7 +42,7 @@ class DatabaseSession():
         )
 
         self.session.set_keyspace('nierelacyjne')
-
+        
     def add(self, obj: DatabaseObject):
         self.session.execute(obj.add_to_database())
 
@@ -53,7 +52,7 @@ class DatabaseSession():
     def update(self, obj: DatabaseObject):
         self.session.execute(obj.update_data())
 
-    def get(self, _id: UUID, table_name: str, table_id_col: str = None) -> namedtuple:
+    def get(self, _id: UUID, table_name: str, table_id_col: str=None) -> namedtuple:
         return self.session.execute(
             f"""
             SELECT * FROM {table_name}
@@ -66,3 +65,4 @@ class DatabaseSession():
 
     def find_by(self, table_name: str, where_sql_clause: str) -> list[namedtuple]:
         return list(self.session.execute(f"SELECT * FROM {table_name} WHERE {where_sql_clause} ALLOW FILTERING;"))
+        

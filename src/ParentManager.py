@@ -4,7 +4,6 @@ from Repository import Repository
 
 from uuid import UUID
 
-
 class ParentManager():
     def __init__(self):
         self.repo = Repository()
@@ -18,10 +17,9 @@ class ParentManager():
             child: Child
     ) -> UUID:
 
-        parent = Parent(parent_name, address, phone_number,
-                        is_teaching_required, child)
-        self.repo.add(parent)  # add parent + child to parents
-        self.repo.add(child)  # add child to children
+        parent = Parent(parent_name, address, phone_number, is_teaching_required, child)
+        self.repo.add(parent) # add parent + child to parents
+        self.repo.add(child) # add child to children
 
         return parent.p_id
 
