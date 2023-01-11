@@ -19,7 +19,7 @@ class DatabaseSession():
 
         exec_profile = ExecutionProfile(
             retry_policy=LoadBalancingPolicy(),
-            consistency_level=ConsistencyLevel.LOCAL_QUORUM,
+            consistency_level=ConsistencyLevel.ONE,
             serial_consistency_level=ConsistencyLevel.LOCAL_SERIAL,
             request_timeout=15,
             row_factory=named_tuple_factory,
