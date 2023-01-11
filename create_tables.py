@@ -1,4 +1,4 @@
-from src.DatabaseSession import DatabaseSession
+from DatabaseSession import DatabaseSession
 
 ds = DatabaseSession()
 
@@ -48,7 +48,7 @@ ds.session.execute(
 """
 CREATE TABLE IF NOT EXISTS reservations(
     r_id UUID PRIMARY KEY,
-    r_date DATE,
+    r_date TEXT,
     r_start_hour INT,
     r_end_hour INT,
     

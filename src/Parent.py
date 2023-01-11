@@ -4,6 +4,7 @@ from Child import Child
 from uuid import uuid4
 from collections import namedtuple
 
+
 class Parent(DatabaseObject):
     """Klasa rodzica odpowiedzialna za wynajmowanie opiekunki dla dziecka"""
 
@@ -11,7 +12,8 @@ class Parent(DatabaseObject):
 
     @staticmethod
     def create_from_row(db_row: namedtuple) -> object:
-        p = Parent(db_row.p_name, db_row.p_address, db_row.p_phone_number, db_row.p_teaching_required, Child.create_from_row(db_row))
+        p = Parent(db_row.p_name, db_row.p_address, db_row.p_phone_number,
+                   db_row.p_teaching_required, Child.create_from_row(db_row))
         p.p_id = db_row.p_id
         return p
 
@@ -39,18 +41,18 @@ class Parent(DatabaseObject):
         """
 
     def __init__(
-        self, 
-        parent_name: str, 
-        address: str, 
-        phone_number: str, 
+        self,
+        parent_name: str,
+        address: str,
+        phone_number: str,
         is_teaching_required: bool,
         child: Child
     ):
         if not parent_name or not parent_name.split():
             raise ValueError("Wprowadz poprawne imie rodzica!")
 
-        if len(phone_number) < 9:
-            raise ValueError("Wprowadz poprawny numer telefonu!")
+        # if len(phone_number) < 9:
+        #     raise ValueError("Wprowadz poprawny numer telefonu!")
 
         if not address or not address.split():
             raise ValueError("Wprowadz poprawny adres!")
